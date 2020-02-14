@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "400372506567",
+    "firebase_url": "https://inventeringsapp-7b039.firebaseio.com",
+    "project_id": "inventeringsapp-7b039",
+    "storage_bucket": "inventeringsapp-7b039.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400372506567:android:dc8d58949b8f33cc0803e2",
+        "android_client_info": {
+          "package_name": "com.example.inventeringsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400372506567-m1vbb6vgmkekk9ljb7hsh4ipoge2347i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.inventeringsapp",
+            "certificate_hash": "1dcc0a816be0578fd56be2675853dee7a53b7b82"
+          }
+        },
+        {
+          "client_id": "400372506567-dg9gjjmnr50m2q3od63btk2mrecn70je.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM6Bwp3UNrcdGe4XAcQCdKb-B__8Bo2Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400372506567-dg9gjjmnr50m2q3od63btk2mrecn70je.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
