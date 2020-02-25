@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.login
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +12,19 @@ import com.example.inventeringsapp.main.MainActivity
 import com.example.inventeringsapp.repository.DB
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
+import com.google.api.services.sheets.v4.Sheets
+import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
@@ -23,16 +36,29 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .requestScopes(Scope(SheetsScopes.DRIVE))
+            .requestEmail()
+            .build()
+        DB.mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+      
         sign_in_button.setOnClickListener {
             signIn()
         }
     }
 
     private fun signIn() {
-        val signInIntent = DB.mGoogleSignInClient(this).signInIntent
+        val signInIntent = DB.mGoogleSignInClient?.signInIntent
         startActivityForResult(signInIntent, 123)
     }
+
+
+
+
+
+
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -43,6 +69,9 @@ class LoginActivity : AppCompatActivity() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
+                if (account != null) {
+                    drivesignin(account)
+                }
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -71,6 +100,22 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
+    }
+
+    private fun drivesignin(acct: GoogleSignInAccount){
+        // Use the authenticated account to sign in to the Drive service.
+        val credential = GoogleAccountCredential.usingOAuth2(
+            this, setOf(DriveScopes.DRIVE_FILE)
+        )
+
+        val transport = AndroidHttp.newCompatibleTransport()
+        val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
+        DB.mService = Sheets.Builder(
+            transport, jsonFactory, credential
+        )
+            .setApplicationName("Inventering 2020")
+            .build()
+        credential.selectedAccount = acct.account
     }
 
     public override fun onStart() {
