@@ -39,8 +39,12 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = DB.auth.currentUser
-        updateUI(currentUser)
-        Log.d("___",DB.mService.toString())
+        if (currentUser == null || DB.mService == null){
+            updateUI(null)
+        }else{
+            updateUI(currentUser)
+        }
+
     }
 
     private fun updateUI(user: FirebaseUser?) {

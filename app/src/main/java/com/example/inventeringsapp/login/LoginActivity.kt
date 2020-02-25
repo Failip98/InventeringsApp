@@ -12,16 +12,13 @@ import com.example.inventeringsapp.main.MainActivity
 import com.example.inventeringsapp.repository.DB
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
@@ -45,6 +42,9 @@ class LoginActivity : AppCompatActivity() {
         DB.mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
       
         sign_in_button.setOnClickListener {
+            signIn()
+        }
+        if(DB.auth.currentUser != null){
             signIn()
         }
     }
@@ -121,8 +121,8 @@ class LoginActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = DB.auth.currentUser
-        updateUI(currentUser)
+        //val currentUser = DB.auth.currentUser
+        //updateUI(currentUser)
     }
 
     private fun updateUI(user: FirebaseUser?) {

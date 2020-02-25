@@ -19,8 +19,7 @@ class SheetActivity : AppCompatActivity() {
             printSheet()
         }
     }
-
-
+    
     fun printSheet(){
         var a = doInBackground()
         Handler().postDelayed({
@@ -31,8 +30,6 @@ class SheetActivity : AppCompatActivity() {
         return getDataFromApi()
     }
 
-    //FUNGERAR 24/2
-    //skicka in spreadsheetId
     private fun getDataFromApi(): List<String>? {
         val spreadsheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
         val range = "Test!A:F"
@@ -44,13 +41,10 @@ class SheetActivity : AppCompatActivity() {
                 DB.mService!!.spreadsheets().values()[spreadsheetId, range]
                     .execute()
             val values = response.getValues()
-            Log.d("___",values.size.toString())
             if (values != null) {
                 for (row in values) {
                     for(col in values){
-                        Log.d("___",col[2].toString())
                         if (col[2].equals("")){
-                            Log.d("___","TEST")
                             col.removeAt(2)
                             col.add(2,"----------------------")
                         }
