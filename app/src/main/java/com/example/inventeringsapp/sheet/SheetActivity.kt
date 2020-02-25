@@ -31,8 +31,11 @@ class SheetActivity : AppCompatActivity() {
     }
 
     private fun getDataFromApi(): List<String>? {
-        val spreadsheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-        val range = "Test!A:F"
+        //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
+        var sheetId = intent.getStringExtra("sheet_id")
+        var pageName = intent.getStringExtra("pageName")
+        val spreadsheetId = sheetId
+        val range = pageName+"!A:F"
         val results: MutableList<String> =
             ArrayList()
         Thread(Runnable {

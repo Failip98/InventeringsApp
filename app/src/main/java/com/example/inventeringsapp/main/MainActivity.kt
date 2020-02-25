@@ -27,7 +27,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         OnStart.applicationComponent.inject(this)
         btn_goToSheet.setOnClickListener {
+
+            var sheetId = editText_sheetId.text.toString()
+            var pagename = editText_pagename.text.toString()
             val intent = Intent(this, SheetActivity::class.java)
+                .putExtra("sheet_id",sheetId)
+                .putExtra("pageName",pagename)
             startActivity(intent)
         }
         btn_logout.setOnClickListener {
@@ -57,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        Log.d("___","LOGARUT!!!")
         DB.auth.signOut()
         DB.mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) {
             updateUI(null)
