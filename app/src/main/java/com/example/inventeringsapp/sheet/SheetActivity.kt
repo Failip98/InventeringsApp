@@ -36,9 +36,7 @@ class SheetActivity : AppCompatActivity() {
     }
 
     private fun getDataFromApi(): List<String>? {
-
         //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-
         var sheetId = ""
         var pageName = ""
         if (DB.devmode == true){
