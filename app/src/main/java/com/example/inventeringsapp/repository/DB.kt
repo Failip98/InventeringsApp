@@ -12,6 +12,6 @@ class DB{
 
         var mGoogleSignInClient : GoogleSignInClient? = null
 
-
+        var devmode = true
     }
 }

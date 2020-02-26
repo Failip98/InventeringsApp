@@ -31,8 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Sheet_Id"
+        android:hint="Sheet_Id"
         app:layout_constraintBottom_toTopOf="@+id/editText_pagename"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,8 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Page_Name"
+        android:hint="Page_Name"
         app:layout_constraintBottom_toTopOf="@+id/btn_goToSheet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
