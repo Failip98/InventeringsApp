@@ -3,6 +3,9 @@ package com.example.inventeringsapp.sheet
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB
@@ -18,7 +21,31 @@ class SheetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sheet)
         printSheet()
     }
-    
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item?.itemId){
+            R.id.menu_addItem->{
+                Log.d("___", item.itemId.toString())
+            }
+            R.id.menu_scanItem->{
+                Log.d("___", item.itemId.toString())
+            }
+            R.id.menu_removeItem->{
+                Log.d("___", item.itemId.toString())
+            }
+            R.id.menu_updateItem->{
+                Log.d("___", item.itemId.toString())
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     fun printSheet(){
         var a = doInBackground()
         Handler().postDelayed({
