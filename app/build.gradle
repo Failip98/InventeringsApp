@@ -20,6 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 dependencies {
@@ -37,4 +47,25 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.25.4'
     kapt 'com.google.dagger:dagger-compiler:2.25.4'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+
+    // g drive libs
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation('com.google.api-client:google-api-client-android:1.26.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    //Sheets
+    implementation('com.google.apis:google-api-services-sheets:v4-rev505-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+
+    implementation 'com.google.android.gms:play-services-drive:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-appindexing:19.1.0'
 }
