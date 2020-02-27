@@ -7,8 +7,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB
+import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
 import java.util.*
 
@@ -16,10 +18,29 @@ class SheetActivity : AppCompatActivity() {
 
     private var mLastError: Exception? = null
 
+    private val fragmentManager = supportFragmentManager
+    private val emptyFragment = EmptyFragment()
+    private val addItemFragment = AddItemFragment()
+    private val deliteItemFragment = DeliteItemFragment()
+    private val scanItemFragment = ScanItemFragment();
+    private val updateitemFragment = UpdateItemFragment();
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
+
+        changeFragment(emptyFragment)
+
+
         printSheet()
+    }
+
+
+    fun changeFragment(fragment: Fragment){
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.myFragment, fragment)
+        fragmentTransaction.commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -32,15 +53,19 @@ class SheetActivity : AppCompatActivity() {
         when (item?.itemId){
             R.id.menu_addItem->{
                 Log.d("___", item.itemId.toString())
+                changeFragment(addItemFragment)
             }
             R.id.menu_scanItem->{
                 Log.d("___", item.itemId.toString())
+                changeFragment(scanItemFragment)
             }
             R.id.menu_removeItem->{
                 Log.d("___", item.itemId.toString())
+                changeFragment(deliteItemFragment)
             }
             R.id.menu_updateItem->{
                 Log.d("___", item.itemId.toString())
+                changeFragment(updateitemFragment)
             }
         }
         return super.onOptionsItemSelected(item)
