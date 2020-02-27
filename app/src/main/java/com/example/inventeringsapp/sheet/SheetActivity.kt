@@ -26,6 +26,12 @@ class SheetActivity : AppCompatActivity() {
     private val updateitemFragment = UpdateItemFragment();
 
 
+    companion object {
+        var sheetId = ""
+        var pageName = ""
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
@@ -89,8 +95,7 @@ class SheetActivity : AppCompatActivity() {
 
     private fun getDataFromApi(): List<String>? {
         //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-        var sheetId = ""
-        var pageName = ""
+
         if (DB.devmode == true){
             sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
             pageName = "Test"
