@@ -29,6 +29,7 @@ class SheetActivity : AppCompatActivity() {
     companion object {
         var sheetId = ""
         var pageName = ""
+
     }
 
 
@@ -42,6 +43,15 @@ class SheetActivity : AppCompatActivity() {
         printSheet()
     }
 
+
+
+    fun printSheet(){
+        var a = doInBackground()
+        doInBackground()
+        Handler().postDelayed({
+            onPostExecute(a)
+        }, 1500)
+    }
 
     fun changeFragment(fragment: Fragment){
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -77,13 +87,8 @@ class SheetActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun printSheet(){
-        var a = doInBackground()
-        Handler().postDelayed({
-            onPostExecute(a)
-        }, 1000)
-    }
-    protected fun doInBackground(): List<String?>? {
+
+    fun doInBackground(): List<String?>? {
         //return getDataFromApi()
         return try {
             getDataFromApi()
@@ -93,7 +98,7 @@ class SheetActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDataFromApi(): List<String>? {
+    fun getDataFromApi(): List<String>? {
         //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
 
         if (DB.devmode == true){
@@ -133,7 +138,7 @@ class SheetActivity : AppCompatActivity() {
         return results
     }
 
-    protected fun onPostExecute(output: List<String?>?) {
+    fun onPostExecute(output: List<String?>?) {
         if (output == null || output.size == 0) {
             //mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
             if (DB.devmode == true){
