@@ -2,7 +2,7 @@ package com.example.inventeringsapp.sheet.sheetfragments
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +29,7 @@ class AddItemFragment : Fragment() {
     var cost = 0.0
     var valueprice = 0.0
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,13 +42,22 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //addItem()
+
         btn_addItem.setOnClickListener {
             name = editText_addItemName.text.toString()
-            quantity = editText_addItemQuantity.text.toString().toDouble()
-            cost = editText_addItemCost.text.toString().toDouble()
+            if(editText_addItemQuantity.text.toString() != ""){
+                quantity = editText_addItemQuantity.text.toString().toDouble()
+            }else{
+                quantity = quantity.toInt().toDouble()
+            }
 
-            Log.d("___",quantity.toString())
-            Log.d("___",cost.toString())
+            if(editText_addItemCost.text.toString() != ""){
+                cost = editText_addItemCost.text.toString().toDouble()
+            }else{
+                cost = cost.toInt().toDouble()
+            }
+
+
             if (name == "") {
                 if (name == "") {
                     editText_addItemName.setHint("Fill in Name")
@@ -55,18 +65,20 @@ class AddItemFragment : Fragment() {
                 }
             }
             else{
-                addItem()
                 editText_addItemName.getText().clear()
                 editText_addItemQuantity.getText().clear()
                 editText_addItemCost.getText().clear()
-                (activity as SheetActivity?)?.printSheet()
+                addItem()
+                Handler().postDelayed({
+                    (activity as SheetActivity?)?.printSheet()
+                },1000)
             }
         }
     }
 
 
     fun addItem() {
-        Log.d("___","ADD WALUE")
+        id = System.currentTimeMillis().toString()
         val appendBody =
             ValueRange()
                 .setValues(

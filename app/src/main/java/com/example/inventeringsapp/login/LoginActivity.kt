@@ -1,12 +1,13 @@
 package com.example.inventeringsapp.login
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.main.MainActivity
 import com.example.inventeringsapp.repository.DB
@@ -53,6 +54,9 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent = DB.mGoogleSignInClient?.signInIntent
         startActivityForResult(signInIntent, 123)
     }
+
+
+
 
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
