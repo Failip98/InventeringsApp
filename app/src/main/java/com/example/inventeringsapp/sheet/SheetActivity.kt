@@ -29,27 +29,28 @@ class SheetActivity : AppCompatActivity() {
     companion object {
         var sheetId = ""
         var pageName = ""
-
+        var nexid = 0
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
-
         changeFragment(emptyFragment)
-
-
         printSheet()
+
     }
 
 
+    fun getbroutSheetList(): List<String?>? {
+        var a = doInBackground()
+        Log.d("___",a?.size.toString())
+        return a
+    }
 
     fun printSheet(){
-        var a = doInBackground()
-        doInBackground()
+        var broutSheetList = doInBackground()
         Handler().postDelayed({
-            onPostExecute(a)
+            onPostExecute(broutSheetList)
         }, 1500)
     }
 
@@ -146,6 +147,7 @@ class SheetActivity : AppCompatActivity() {
             }else{
                 mOutputText.setText("Check your sheet settings")
             }
+            nexid = (output?.size!! - 1)
         } else {
             mOutputText.setText(TextUtils.join("\n", output))
         }
