@@ -26,16 +26,26 @@ class SheetActivity : AppCompatActivity() {
     private val updateitemFragment = UpdateItemFragment();
 
 
+    companion object {
+        var sheetId = ""
+        var pageName = ""
+        var sheetList = mutableListOf<String>()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
-
         changeFragment(emptyFragment)
-
-
         printSheet()
+
     }
 
+    fun printSheet(){
+        var broutSheetList = doInBackground()
+        Handler().postDelayed({
+            onPostExecute(broutSheetList)
+        }, 1500)
+    }
 
     fun changeFragment(fragment: Fragment){
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -71,13 +81,8 @@ class SheetActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun printSheet(){
-        var a = doInBackground()
-        Handler().postDelayed({
-            onPostExecute(a)
-        }, 1000)
-    }
-    protected fun doInBackground(): List<String?>? {
+
+    fun doInBackground(): List<String?>? {
         //return getDataFromApi()
         return try {
             getDataFromApi()
@@ -87,10 +92,9 @@ class SheetActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDataFromApi(): List<String>? {
+    fun getDataFromApi(): List<String>? {
         //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-        var sheetId = ""
-        var pageName = ""
+
         if (DB.devmode == true){
             sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
             pageName = "Test"
@@ -128,9 +132,8 @@ class SheetActivity : AppCompatActivity() {
         return results
     }
 
-    protected fun onPostExecute(output: List<String?>?) {
+    fun onPostExecute(output: List<String?>?) {
         if (output == null || output.size == 0) {
-            //mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
             if (DB.devmode == true){
                 mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
             }else{
@@ -138,7 +141,11 @@ class SheetActivity : AppCompatActivity() {
             }
         } else {
             mOutputText.setText(TextUtils.join("\n", output))
+
         }
+        Handler().postDelayed({
+            sheetList = output as MutableList<String>
+        },1000)
     }
 
 }
