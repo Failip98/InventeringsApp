@@ -42,24 +42,17 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addItem.setOnClickListener {
-            name = editText_addItemName.text.toString()
-            if(editText_addItemQuantity.text.toString() != ""){
+            if(editText_addItemQuantity.text.toString() != "" || editText_addItemQuantity.text.toString().length > 9){
                 quantity = editText_addItemQuantity.text.toString().toDouble()
-            }else{
-                quantity = quantity.toInt().toDouble()
             }
 
-            if(editText_addItemCost.text.toString() != ""){
+            if(editText_addItemCost.text.toString() != "" || editText_addItemCost.text.toString().length > 9){
                 cost = editText_addItemCost.text.toString().toDouble()
-            }else{
-                cost = cost.toInt().toDouble()
             }
 
-            if (name == "") {
-                if (name == "") {
-                    editText_addItemName.setHint("Fill in Name")
-                    editText_addItemName.setHintTextColor(Color.RED)
-                }
+            if (editText_addItemName.text.toString() == "") {
+                editText_addItemName.setHint("Fill in Name")
+                editText_addItemName.setHintTextColor(Color.RED)
             }
             else{
                 editText_addItemName.getText().clear()
