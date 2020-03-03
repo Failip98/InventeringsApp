@@ -29,7 +29,7 @@ class SheetActivity : AppCompatActivity() {
     companion object {
         var sheetId = ""
         var pageName = ""
-        var nexid = 0
+        var sheetList = mutableListOf<String>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +38,6 @@ class SheetActivity : AppCompatActivity() {
         changeFragment(emptyFragment)
         printSheet()
 
-    }
-
-
-    fun getbroutSheetList(): List<String?>? {
-        var a = doInBackground()
-        Log.d("___",a?.size.toString())
-        return a
     }
 
     fun printSheet(){
@@ -141,16 +134,18 @@ class SheetActivity : AppCompatActivity() {
 
     fun onPostExecute(output: List<String?>?) {
         if (output == null || output.size == 0) {
-            //mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
             if (DB.devmode == true){
                 mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
             }else{
                 mOutputText.setText("Check your sheet settings")
             }
-            nexid = (output?.size!! - 1)
         } else {
             mOutputText.setText(TextUtils.join("\n", output))
+
         }
+        Handler().postDelayed({
+            sheetList = output as MutableList<String>
+        },1000)
     }
 
 }

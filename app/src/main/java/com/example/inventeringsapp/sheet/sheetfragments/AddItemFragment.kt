@@ -16,6 +16,7 @@ import com.google.api.services.sheets.v4.model.ValueRange
 import kotlinx.android.synthetic.main.fragment_additem.*
 import java.io.IOException
 import java.util.*
+import kotlin.random.Random
 
 
 class AddItemFragment : Fragment() {
@@ -35,14 +36,11 @@ class AddItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_additem, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //addItem()
-
         btn_addItem.setOnClickListener {
             name = editText_addItemName.text.toString()
             if(editText_addItemQuantity.text.toString() != ""){
@@ -56,7 +54,6 @@ class AddItemFragment : Fragment() {
             }else{
                 cost = cost.toInt().toDouble()
             }
-
 
             if (name == "") {
                 if (name == "") {
@@ -78,7 +75,7 @@ class AddItemFragment : Fragment() {
 
 
     fun addItem() {
-        id = System.currentTimeMillis().toString()
+        id = Random.nextInt(100000000,999999999).toString()
         val appendBody =
             ValueRange()
                 .setValues(
