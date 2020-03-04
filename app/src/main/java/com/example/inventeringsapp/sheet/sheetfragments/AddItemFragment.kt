@@ -42,11 +42,11 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addItem.setOnClickListener {
-            if(editText_addItemQuantity.text.toString() != "" || editText_addItemQuantity.text.toString().length > 9){
+            if(editText_addItemQuantity.text.toString() != "" || editText_addItemQuantity.text.toString().length > 9 && editText_addItemQuantity.text.toString().length < 10){
                 quantity = editText_addItemQuantity.text.toString().toDouble()
             }
 
-            if(editText_addItemCost.text.toString() != "" || editText_addItemCost.text.toString().length > 9){
+            if(editText_addItemCost.text.toString() != "" || editText_addItemCost.text.toString().length > 9 && editText_addItemCost.text.toString().length < 10){
                 cost = editText_addItemCost.text.toString().toDouble()
             }
 
