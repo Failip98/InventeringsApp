@@ -23,7 +23,7 @@ class SheetActivity : AppCompatActivity() {
     private val addItemFragment = AddItemFragment()
     private val deliteItemFragment = DeliteItemFragment()
     private val scanItemFragment = ScanItemFragment();
-    private val updateitemFragment = UpdateItemFragment();
+    private val updateitemFragment = UpdateItemFragment(this);
 
 
     companion object {
