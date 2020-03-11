@@ -12,6 +12,9 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,6 +33,20 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
     }
+
+    androidExtensions {
+        experimental = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
 }
 
 dependencies {
@@ -68,4 +85,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.firebase:firebase-appindexing:19.1.0'
+
+    // MLKit Dependencies
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
+    implementation 'com.google.firebase:firebase-ml-vision-object-detection-model:19.0.3'
+
+    api 'com.google.guava:guava:28.2-jre'
+
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
+apply plugin: 'com.google.gms.google-services'
