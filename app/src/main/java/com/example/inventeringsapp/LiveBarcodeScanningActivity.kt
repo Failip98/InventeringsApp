@@ -18,6 +18,7 @@ package com.example.inventeringsapp
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
@@ -39,12 +40,18 @@ import com.example.inventeringsapp.barcodedetection.BarcodeResultFragment
 import com.example.inventeringsapp.camera.CameraSource
 import com.example.inventeringsapp.camera.CameraSourcePreview
 import com.example.inventeringsapp.settings.SettingsActivity
+import com.example.inventeringsapp.sheet.sheetfragments.AddItemFragment
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
@@ -61,8 +68,9 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d("___","Hello can you hear me")
         setContentView(R.layout.activity_live_barcode_kotlin)
+
         preview = findViewById(R.id.camera_preview)
         graphicOverlay = findViewById<GraphicOverlay>(R.id.camera_preview_graphic_overlay).apply {
             setOnClickListener(this@LiveBarcodeScanningActivity)
@@ -71,7 +79,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
         promptChip = findViewById(R.id.bottom_prompt_chip)
         promptChipAnimator =
-            (AnimatorInflater.loadAnimator(this, R.animator.bottom_prompt_chip_enter) as AnimatorSet).apply {
+            (AnimatorInflater.loadAnimator(baseContext, R.animator.bottom_prompt_chip_enter) as AnimatorSet).apply {
                 setTarget(promptChip)
             }
 
@@ -82,8 +90,11 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         settingsButton = findViewById<View>(R.id.settings_button).apply {
             setOnClickListener(this@LiveBarcodeScanningActivity)
         }
-
         setUpWorkflowModel()
+
+        CoroutineScope(IO).launch {
+
+        }
     }
 
     override fun onResume() {
@@ -218,13 +229,11 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
     }
 
     fun readApi(barcode: String) {
-
-        //var barcode = "7310511210403"
+        Log.d("___",barcode)
         Thread(Runnable {
             try {
                 val url =
                     URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key=3m9gkrslsveortsjb1hwsu6lj49ct1")
-                Log.d("___", "HEj")
                 val br = BufferedReader(InputStreamReader(url.openStream()))
                 Log.d("___", br.toString())
                 var str: String? = ""

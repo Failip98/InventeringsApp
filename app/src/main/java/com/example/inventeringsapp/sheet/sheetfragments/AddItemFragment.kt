@@ -30,7 +30,6 @@ class AddItemFragment : Fragment() {
     var cost = 0.0
     var valueprice = 0.0
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

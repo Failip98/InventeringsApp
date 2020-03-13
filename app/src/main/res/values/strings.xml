@@ -10,7 +10,7 @@
     <string name="mode_odt_static_subtitle">One or more objects can be detected from a provided image.</string>
     <string name="mode_barcode_live_title">Barcode Scanning</string>
     <string name="mode_barcode_live_subtitle">Read data encoded in most standard barcode formats.</string>
-    <string name="settings_title">MLKit Showcase Settings</string>
+    <string name="settings_title">Inventerings App Showcase Settings</string>
     <string name="cd_settings_button">Settings</string>
     <string name="cd_close_button">Back</string>
     <string name="cd_flash_button">Toggle camera flash</string>

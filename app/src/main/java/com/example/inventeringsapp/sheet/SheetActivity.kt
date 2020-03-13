@@ -1,14 +1,17 @@
 package com.example.inventeringsapp.sheet
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.inventeringsapp.LiveBarcodeScanningActivity
 import com.example.inventeringsapp.R
+import com.example.inventeringsapp.Utils
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
@@ -16,20 +19,23 @@ import java.util.*
 
 class SheetActivity : AppCompatActivity() {
 
+
+
     private var mLastError: Exception? = null
 
     private val fragmentManager = supportFragmentManager
     private val emptyFragment = EmptyFragment()
     private val addItemFragment = AddItemFragment()
     private val deliteItemFragment = DeliteItemFragment()
-    private val scanItemFragment = ScanItemFragment();
-    private val updateitemFragment = UpdateItemFragment(this);
+    private val scanItemFragment = ScanItemFragment(this)
+    private val updateitemFragment = UpdateItemFragment(this)
 
 
     companion object {
         var sheetId = ""
         var pageName = ""
         var sheetList = mutableListOf<String>()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +43,13 @@ class SheetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sheet)
         changeFragment(emptyFragment)
         printSheet()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (!Utils.allPermissionsGranted(this)) {
+            Utils.requestRuntimePermissions(this)
+        }
     }
 
     fun printSheet(){
@@ -147,5 +159,7 @@ class SheetActivity : AppCompatActivity() {
             sheetList = output as MutableList<String>
         },1000)
     }
+
+
 
 }
