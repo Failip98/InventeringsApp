@@ -18,40 +18,39 @@ package com.example.inventeringsapp
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
-import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.chip.Chip
-import com.google.common.base.Objects
 import com.example.inventeringsapp.apiitem.RootObject
-import com.example.inventeringsapp.camera.GraphicOverlay
-import com.example.inventeringsapp.camera.WorkflowModel
-import com.example.inventeringsapp.camera.WorkflowModel.WorkflowState
 import com.example.inventeringsapp.barcodedetection.BarcodeField
 import com.example.inventeringsapp.barcodedetection.BarcodeProcessor
 import com.example.inventeringsapp.barcodedetection.BarcodeResultFragment
 import com.example.inventeringsapp.camera.CameraSource
 import com.example.inventeringsapp.camera.CameraSourcePreview
+import com.example.inventeringsapp.camera.GraphicOverlay
+import com.example.inventeringsapp.camera.WorkflowModel
+import com.example.inventeringsapp.camera.WorkflowModel.WorkflowState
 import com.example.inventeringsapp.settings.SettingsActivity
+import com.example.inventeringsapp.sheet.SheetActivity
 import com.example.inventeringsapp.sheet.sheetfragments.AddItemFragment
+import com.google.android.material.chip.Chip
+import com.google.common.base.Objects
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
-import java.util.ArrayList
-import kotlin.concurrent.thread
+import java.util.*
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
@@ -229,6 +228,9 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
     }
 
     fun readApi(barcode: String) {
+        CoroutineScope(IO).launch {
+
+        }
         Log.d("___",barcode)
         Thread(Runnable {
             try {
@@ -249,13 +251,24 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 Log.d("___", "Barcode Number: " + barcode)
                 Log.d("___", "Product Name: " + name)
                 Log.d("___", "Entire Response: " + data)
-
+                if(name != null && barcode != null){
+                    AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+                    val intent = Intent(this, SheetActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    Log.d("___","Can`t add product")
+                    runOnUiThread {
+                        Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } catch (ex: Exception) {
                 //ex.printStackTrace()
+                startActivity(intent)
+                runOnUiThread {
+                    Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
+                }
                 Log.d("___","Can`t find product")
             }
         }).start()
-
     }
-
 }
