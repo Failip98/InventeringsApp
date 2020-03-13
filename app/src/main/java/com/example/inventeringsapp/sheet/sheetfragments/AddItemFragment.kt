@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB.Companion.mService
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.model.AppendValuesResponse
 import com.google.api.services.sheets.v4.model.ValueRange
 import kotlinx.android.synthetic.main.fragment_additem.*
@@ -57,7 +58,7 @@ class AddItemFragment : Fragment() {
                 editText_addItemName.getText().clear()
                 editText_addItemQuantity.getText().clear()
                 editText_addItemCost.getText().clear()
-                addItem()
+                addItem(id,name,barcode,quantity,cost,valueprice)
                 Handler().postDelayed({
                     (activity as SheetActivity?)?.printSheet()
                 },1000)
@@ -65,27 +66,32 @@ class AddItemFragment : Fragment() {
         }
     }
 
-
-    fun addItem() {
-        id = Random.nextInt(100000000,999999999).toString()
-        val appendBody =
-            ValueRange()
-                .setValues(
-                    Arrays.asList(
-                        Arrays.asList(id,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
-                )
-        Thread(Runnable {
-            try {
-                val appendResult: AppendValuesResponse = mService?.spreadsheets()?.values()
-                    ?.append(SheetActivity.sheetId, SheetActivity.pageName, appendBody)
-                    ?.setValueInputOption("USER_ENTERED")
-                    ?.setInsertDataOption("INSERT_ROWS")
-                    ?.setIncludeValuesInResponse(true)
-                    ?.execute()!!
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }).start()
+    companion object{
+        var id :String = ""
+        fun addItem(id:String, name:String, barcode:String, quantity:Double,cost:Double,valueprice:Double  ) {
+            this.id = id
+            this.id = Random.nextInt(100000000,999999999).toString()
+            val appendBody =
+                ValueRange()
+                    .setValues(
+                        Arrays.asList(
+                            Arrays.asList(this.id,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
+                    )
+            Thread(Runnable {
+                try {
+                    val appendResult: AppendValuesResponse = mService?.spreadsheets()?.values()
+                        ?.append(SheetActivity.sheetId, SheetActivity.pageName, appendBody)
+                        ?.setValueInputOption("USER_ENTERED")
+                        ?.setInsertDataOption("INSERT_ROWS")
+                        ?.setIncludeValuesInResponse(true)
+                        ?.execute()!!
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }).start()
+        }
     }
+
+
 
 }

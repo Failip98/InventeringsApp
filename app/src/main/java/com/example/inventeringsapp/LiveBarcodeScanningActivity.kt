@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -40,6 +41,7 @@ import com.example.inventeringsapp.barcodedetection.BarcodeResultFragment
 import com.example.inventeringsapp.camera.CameraSource
 import com.example.inventeringsapp.camera.CameraSourcePreview
 import com.example.inventeringsapp.settings.SettingsActivity
+import com.example.inventeringsapp.sheet.SheetActivity
 import com.example.inventeringsapp.sheet.sheetfragments.AddItemFragment
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -249,9 +251,16 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 Log.d("___", "Barcode Number: " + barcode)
                 Log.d("___", "Product Name: " + name)
                 Log.d("___", "Entire Response: " + data)
-
+                if(name != null && barcode != null){
+                    AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+                    val intent = Intent(this, SheetActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    Log.d("___","Can`t add product")
+                }
             } catch (ex: Exception) {
                 //ex.printStackTrace()
+                startActivity(intent)
                 Log.d("___","Can`t find product")
             }
         }).start()
