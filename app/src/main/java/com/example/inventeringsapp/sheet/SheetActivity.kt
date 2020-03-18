@@ -1,25 +1,25 @@
 package com.example.inventeringsapp.sheet
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.inventeringsapp.LiveBarcodeScanningActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.inventeringsapp.OnStart
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.Utils
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
-import java.util.*
+import javax.inject.Inject
 
 class SheetActivity : AppCompatActivity() {
 
-
+    @Inject
+    lateinit var viewModel: SheetViewModel
 
     private var mLastError: Exception? = null
 
@@ -31,17 +31,21 @@ class SheetActivity : AppCompatActivity() {
     private val updateitemFragment = UpdateItemFragment(this)
 
 
+    lateinit var listItemAdapter: ListItemAdapter
+
+
     companion object {
         var sheetId = ""
         var pageName = ""
         var sheetList = mutableListOf<String>()
-
+        var listItems = arrayListOf<ListItem>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
         changeFragment(emptyFragment)
+        OnStart.applicationComponent.inject(this)
         printSheet()
     }
 
@@ -52,11 +56,9 @@ class SheetActivity : AppCompatActivity() {
         }
     }
 
+
     fun printSheet(){
-        var broutSheetList = doInBackground()
-        Handler().postDelayed({
-            onPostExecute(broutSheetList)
-        }, 1500)
+        getDataFromApi()
     }
 
     fun changeFragment(fragment: Fragment){
@@ -93,20 +95,7 @@ class SheetActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
-    fun doInBackground(): List<String?>? {
-        //return getDataFromApi()
-        return try {
-            getDataFromApi()
-        } catch (e: java.lang.Exception) {
-            mLastError = e
-            null
-        }
-    }
-
-    fun getDataFromApi(): List<String>? {
-        //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-
+    fun getDataFromApi() {
         if (DB.devmode == true){
             sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
             pageName = "Test"
@@ -114,52 +103,22 @@ class SheetActivity : AppCompatActivity() {
             sheetId = intent?.getStringExtra("sheet_id").toString()
             pageName = intent?.getStringExtra("pageName").toString()
         }
-        //var sheetId = intent.getStringExtra("sheet_id")
-        //var pageName = intent.getStringExtra("pageName")
-        val spreadsheetId = sheetId
-        val range = pageName + "!A:F"
-        val results: MutableList<String> =
-            ArrayList()
-        Thread(Runnable {
-            try {
-            val response =
-                DB.mService!!.spreadsheets().values()[spreadsheetId, range]
-                    .execute()
-            val values = response.getValues()
-            if (values != null) {
-                for (row in values) {
-                    for (col in values) {
-                        if (col[2].equals("")) {
-                            col.removeAt(2)
-                            col.add(2, "----------------------")
-                        }
-                    }
-                    results.add(row[0].toString() + ", " + row[1] + ", " + row[2] + ", " + row[3] + ", " + row[4] + ", " + row[5])
-                }
-            }
-            }catch (e: java.lang.Exception){
-                mLastError = e
-            }
-        }).start()
-        return results
-    }
+        viewModel.fetchList(sheetId,pageName)
 
-    fun onPostExecute(output: List<String?>?) {
-        if (output == null || output.size == 0) {
-            if (DB.devmode == true){
-                mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
-            }else{
-                mOutputText.setText("Check your sheet settings")
-            }
-        } else {
-            mOutputText.setText(TextUtils.join("\n", output))
-
-        }
         Handler().postDelayed({
-            sheetList = output as MutableList<String>
-        },1000)
+            createRecyclerView()
+        }, 1500)
+
     }
 
+    fun createRecyclerView(){
+        val layoutManager = LinearLayoutManager(this)
+        rv_list.layoutManager = layoutManager
 
+        val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        rv_list.addItemDecoration(dividerItemDecoration)
 
+        listItemAdapter = ListItemAdapter(listItems)
+        rv_list.adapter = listItemAdapter
+    }
 }
