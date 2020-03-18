@@ -16,7 +16,7 @@ import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
 import javax.inject.Inject
 
-class SheetActivity : AppCompatActivity() {
+class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     @Inject
     lateinit var viewModel: SheetViewModel
@@ -118,7 +118,11 @@ class SheetActivity : AppCompatActivity() {
         val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         rv_list.addItemDecoration(dividerItemDecoration)
 
-        listItemAdapter = ListItemAdapter(listItems)
+        listItemAdapter = ListItemAdapter(listItems,this)
         rv_list.adapter = listItemAdapter
+    }
+
+    override fun itemClicked(listItem: ListItem) {
+        Log.d("___",listItem.id)
     }
 }

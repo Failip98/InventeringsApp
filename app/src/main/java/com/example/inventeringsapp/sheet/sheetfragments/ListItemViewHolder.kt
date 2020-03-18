@@ -5,11 +5,17 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.listitem_fragment.view.*
 
+interface ListItemActionListener {
+    fun itemClicked(listItem: ListItem)
+}
 
-class ListItemViewHolder(val view: View) :
+class ListItemViewHolder(val view: View, val listItemActionListener: ListItemActionListener) :
     RecyclerView.ViewHolder(view) {
     @SuppressLint("SetTextI18n")
     fun setListItem(listItem: ListItem) {
+        view.setOnClickListener{
+            listItemActionListener.itemClicked(listItem)
+        }
         view.textView_ListItem_id.text = "ID: " + listItem.id
         view.textView_ListItem_name.text = listItem.name
         view.textView_ListItem_barcode.text = "Streckkod: "+listItem.barcode
