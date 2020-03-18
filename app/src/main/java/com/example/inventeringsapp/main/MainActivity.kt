@@ -4,22 +4,18 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.example.inventeringsapp.OnStart
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.login.LoginActivity
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.SheetActivity
-import com.google.api.services.sheets.v4.model.Sheet
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
-
 
     @Inject
     lateinit var viewModel: MainViewModel
@@ -28,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         OnStart.applicationComponent.inject(this)
+        viewModel.test()
         btn_goToSheet.setOnClickListener {
 
             var sheetId = editText_sheetId.text.toString()
