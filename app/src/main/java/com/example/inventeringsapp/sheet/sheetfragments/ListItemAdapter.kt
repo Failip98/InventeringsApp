@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.inventeringsapp.R
 
-class ListItemAdapter(var listItems: ArrayList<ListItem>) :
+class ListItemAdapter(var listItems: ArrayList<ListItem>, val listItemActionListener:ListItemActionListener) :
     RecyclerView.Adapter<ListItemViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
@@ -13,7 +13,8 @@ class ListItemAdapter(var listItems: ArrayList<ListItem>) :
             .from(parent.context)
             .inflate(R.layout.listitem_fragment, parent, false)
         return ListItemViewHolder(
-            view
+            view,
+            listItemActionListener
         )
     }
 
