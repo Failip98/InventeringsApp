@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.inventeringsapp.OnStart
 import com.example.inventeringsapp.R
+import com.example.inventeringsapp.doc.DocActivity
 import com.example.inventeringsapp.login.LoginActivity
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.SheetActivity
@@ -46,6 +47,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
+        }
+        btn_doc.setOnClickListener {
+            val intent = Intent(this, DocActivity::class.java)
+            startActivity(intent)
         }
         btn_logout.setOnClickListener {
             signOut()
