@@ -46,6 +46,13 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         setContentView(R.layout.activity_sheet)
         changeFragment(emptyFragment)
         OnStart.applicationComponent.inject(this)
+        if (DB.devmode == true){
+            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
+            pageName = "Test"
+        }else{
+            sheetId = intent?.getStringExtra("sheet_id").toString()
+            pageName = intent?.getStringExtra("pageName").toString()
+        }
         printSheet()
     }
 
@@ -96,19 +103,11 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     }
 
     fun getDataFromApi() {
-        if (DB.devmode == true){
-            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-            pageName = "Test"
-        }else{
-            sheetId = intent?.getStringExtra("sheet_id").toString()
-            pageName = intent?.getStringExtra("pageName").toString()
-        }
+        Log.d("___","Print new List")
         viewModel.fetchList(sheetId,pageName)
-
         Handler().postDelayed({
             createRecyclerView()
         }, 1500)
-
     }
 
     fun createRecyclerView(){
