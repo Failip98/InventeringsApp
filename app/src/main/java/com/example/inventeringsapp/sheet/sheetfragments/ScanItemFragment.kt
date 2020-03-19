@@ -40,7 +40,6 @@ class ScanItemFragment(context: Context) : Fragment(){
 
 
     fun startScanner(){
-        Log.d("___","HEllo")
         var activity = this@ScanItemFragment.activity
         activity?.startActivity(Intent(activity, LiveBarcodeScanningActivity::class.java))
         Handler().postDelayed({

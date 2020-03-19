@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         OnStart.applicationComponent.inject(this)
-        viewModel.test()
         btn_goToSheet.setOnClickListener {
 
             var sheetId = editText_sheetId.text.toString()
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                     .putExtra("pageName",pagename)
                 startActivity(intent)
             }
-
         }
         btn_logout.setOnClickListener {
             signOut()
