@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, SheetActivity::class.java)
                     .putExtra("sheet_id",sheetId)
                     .putExtra("pageName",pagename)
+                DB.sheetId = sheetId
+                DB.pagename = pagename
                 startActivity(intent)
             }
         }
