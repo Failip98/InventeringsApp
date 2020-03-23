@@ -54,6 +54,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             sheetId = intent?.getStringExtra("sheet_id").toString()
             pageName = intent?.getStringExtra("pageName").toString()
         }
+        printSheet()
     }
 
     override fun onResume() {
