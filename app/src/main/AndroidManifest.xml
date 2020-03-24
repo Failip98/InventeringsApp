@@ -24,9 +24,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".login.LoginActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".doc.DocActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".main.MainActivity"
             android:screenOrientation="portrait">
-        <activity android:name=".doc.DocActivity"></activity>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
