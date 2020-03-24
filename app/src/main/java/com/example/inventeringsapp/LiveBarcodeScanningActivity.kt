@@ -236,43 +236,46 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
             val intent = Intent(this, SheetActivity::class.java)
                 .putExtra("sheet_id",DB.sheetId)
                 .putExtra("pageName",DB.pagename)
-            try {
-                val url =
-                    URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key=3m9gkrslsveortsjb1hwsu6lj49ct1")
-                val br = BufferedReader(InputStreamReader(url.openStream()))
-                Log.d("___", br.toString())
-                var str: String? = ""
-                var data: String? = ""
-                while (null != br.readLine().also { str = it }) {
-                    data += str
-                }
-                val g = Gson()
-                val value: RootObject = g.fromJson(data, RootObject::class.java)
-                val barcode = value.products[0].barcode_number
-                val name = value.products[0].product_name
-                if(name != null && barcode != null){
-                    AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+            if (DB.apiKey != null){
+                Log.d(TAG,DB.apiKey.toString())
+                try {
+                    val url =
+                        URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key="+DB.apiKey.toString())
+                    val br = BufferedReader(InputStreamReader(url.openStream()))
+                    Log.d("___", br.toString())
+                    var str: String? = ""
+                    var data: String? = ""
+                    while (null != br.readLine().also { str = it }) {
+                        data += str
+                    }
+                    val g = Gson()
+                    val value: RootObject = g.fromJson(data, RootObject::class.java)
+                    val barcode = value.products[0].barcode_number
+                    val name = value.products[0].product_name
+                    if(name != null && barcode != null){
+                        AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+                        CoroutineScope(Main).launch {
+                            Handler().postDelayed({
+                                startActivity(intent)
+                            }, 1500)
+                        }
+                    }else{
+                        Log.d("___","Can`t add product")
+                        runOnUiThread {
+                            Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (ex: Exception) {
                     CoroutineScope(Main).launch {
                         Handler().postDelayed({
                             startActivity(intent)
                         }, 1500)
                     }
-                }else{
-                    Log.d("___","Can`t add product")
                     runOnUiThread {
-                        Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
                     }
+                    Log.d("___","Can`t find product")
                 }
-            } catch (ex: Exception) {
-                CoroutineScope(Main).launch {
-                    Handler().postDelayed({
-                        startActivity(intent)
-                    }, 1500)
-                }
-                runOnUiThread {
-                    Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
-                }
-                Log.d("___","Can`t find product")
             }
         }).start()
     }
