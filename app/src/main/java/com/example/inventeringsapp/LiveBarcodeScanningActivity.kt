@@ -21,6 +21,7 @@ import android.animation.AnimatorSet
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
@@ -37,6 +38,7 @@ import com.example.inventeringsapp.camera.CameraSourcePreview
 import com.example.inventeringsapp.camera.GraphicOverlay
 import com.example.inventeringsapp.camera.WorkflowModel
 import com.example.inventeringsapp.camera.WorkflowModel.WorkflowState
+import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.settings.SettingsActivity
 import com.example.inventeringsapp.sheet.SheetActivity
 import com.example.inventeringsapp.sheet.sheetfragments.AddItemFragment
@@ -45,12 +47,15 @@ import com.google.common.base.Objects
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 import java.util.*
+
+private const val TAG = "LiveBarcodeScanningActivity"
 
 /** Demonstrates the barcode scanning workflow using camera preview.  */
 class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
@@ -67,7 +72,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("___","Hello can you hear me")
         setContentView(R.layout.activity_live_barcode_kotlin)
 
         preview = findViewById(R.id.camera_preview)
@@ -228,11 +232,10 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
     }
 
     fun readApi(barcode: String) {
-        CoroutineScope(IO).launch {
-
-        }
-        Log.d("___",barcode)
         Thread(Runnable {
+            val intent = Intent(this, SheetActivity::class.java)
+                .putExtra("sheet_id",DB.sheetId)
+                .putExtra("pageName",DB.pagename)
             try {
                 val url =
                     URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key=3m9gkrslsveortsjb1hwsu6lj49ct1")
@@ -240,7 +243,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 Log.d("___", br.toString())
                 var str: String? = ""
                 var data: String? = ""
-
                 while (null != br.readLine().also { str = it }) {
                     data += str
                 }
@@ -248,13 +250,13 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 val value: RootObject = g.fromJson(data, RootObject::class.java)
                 val barcode = value.products[0].barcode_number
                 val name = value.products[0].product_name
-                Log.d("___", "Barcode Number: " + barcode)
-                Log.d("___", "Product Name: " + name)
-                Log.d("___", "Entire Response: " + data)
                 if(name != null && barcode != null){
                     AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
-                    val intent = Intent(this, SheetActivity::class.java)
-                    startActivity(intent)
+                    CoroutineScope(Main).launch {
+                        Handler().postDelayed({
+                            startActivity(intent)
+                        }, 1500)
+                    }
                 }else{
                     Log.d("___","Can`t add product")
                     runOnUiThread {
@@ -262,8 +264,11 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     }
                 }
             } catch (ex: Exception) {
-                //ex.printStackTrace()
-                startActivity(intent)
+                CoroutineScope(Main).launch {
+                    Handler().postDelayed({
+                        startActivity(intent)
+                    }, 1500)
+                }
                 runOnUiThread {
                     Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
                 }

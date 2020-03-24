@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.sheet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -15,30 +16,28 @@ import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
 import javax.inject.Inject
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 
+
+private const val TAG = "SheetActivity"
 class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     @Inject
     lateinit var viewModel: SheetViewModel
 
-    private var mLastError: Exception? = null
-
-    private val fragmentManager = supportFragmentManager
-    private val emptyFragment = EmptyFragment()
-    private val addItemFragment = AddItemFragment()
-    private val deliteItemFragment = DeliteItemFragment()
-    private val scanItemFragment = ScanItemFragment(this)
-    private val updateitemFragment = UpdateItemFragment(this)
-
-
+    val fragmentManager = supportFragmentManager
+    val addItemFragment = AddItemFragment()
+    val deliteItemFragment = DeliteItemFragment()
+    val scanItemFragment = ScanItemFragment(this)
+    val updateitemFragment = UpdateItemFragment(this)
     lateinit var listItemAdapter: ListItemAdapter
-
 
     companion object {
         var sheetId = ""
         var pageName = ""
-        var sheetList = mutableListOf<String>()
         var listItems = arrayListOf<ListItem>()
+        val emptyFragment = EmptyFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +45,15 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         setContentView(R.layout.activity_sheet)
         changeFragment(emptyFragment)
         OnStart.applicationComponent.inject(this)
+        if (DB.devmode == true){
+            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
+            pageName = "Test"
+            DB.sheetId = sheetId
+            DB.pagename = pageName
+        }else{
+            sheetId = intent?.getStringExtra("sheet_id").toString()
+            pageName = intent?.getStringExtra("pageName").toString()
+        }
         printSheet()
     }
 
@@ -55,7 +63,6 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             Utils.requestRuntimePermissions(this)
         }
     }
-
 
     fun printSheet(){
         getDataFromApi()
@@ -96,19 +103,14 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     }
 
     fun getDataFromApi() {
-        if (DB.devmode == true){
-            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-            pageName = "Test"
-        }else{
-            sheetId = intent?.getStringExtra("sheet_id").toString()
-            pageName = intent?.getStringExtra("pageName").toString()
-        }
+        Log.d(TAG,"Print new List")
         viewModel.fetchList(sheetId,pageName)
-
-        Handler().postDelayed({
-            createRecyclerView()
-        }, 1500)
-
+        CoroutineScope(Main).launch {
+            Handler().postDelayed({
+                errorMessage()
+                createRecyclerView()
+            }, 1500)
+        }
     }
 
     fun createRecyclerView(){
@@ -120,9 +122,23 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
         listItemAdapter = ListItemAdapter(listItems,this)
         rv_list.adapter = listItemAdapter
+
     }
 
     override fun itemClicked(listItem: ListItem) {
         Log.d("___",listItem.id)
     }
+
+    @SuppressLint("SetTextI18n")
+    fun errorMessage() {
+        Log.d(TAG,"onPostExecute")
+        Log.d(TAG, listItems.size.toString())
+        if (listItems.size != 0){
+            textView_error_mesage.visibility = View.GONE
+        }
+        else if(listItems.size == 0){
+            textView_error_mesage.text = "List empty or wrong sheet id"
+        }
+    }
+
 }

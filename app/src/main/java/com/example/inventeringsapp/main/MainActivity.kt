@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         OnStart.applicationComponent.inject(this)
-        viewModel.test()
         btn_goToSheet.setOnClickListener {
 
             var sheetId = editText_sheetId.text.toString()
@@ -44,9 +43,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, SheetActivity::class.java)
                     .putExtra("sheet_id",sheetId)
                     .putExtra("pageName",pagename)
+                DB.sheetId = sheetId
+                DB.pagename = pagename
                 startActivity(intent)
             }
-
         }
         btn_doc.setOnClickListener {
             val intent = Intent(this, DocActivity::class.java)

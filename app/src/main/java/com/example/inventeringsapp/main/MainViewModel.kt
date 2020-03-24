@@ -7,7 +7,4 @@ import javax.inject.Inject
 class MainViewModel  @Inject constructor(val repository: Repository) {
     var text = "MainViewModel"
 
-    fun test(){
-        Log.d("___",text)
-    }
 }
