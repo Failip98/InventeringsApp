@@ -18,7 +18,8 @@ class DocActivity : AppCompatActivity() {
                 "\n"+"-Press get shareable link and the part between /d/ and /edit?usp=sharing is sheet id excluding this to parts."+
                 "\n"+"-Page 1 is the page name if you don´t rename it or want to get a other sheet page."+
                 "\n"+"-Name cell A1 to F6 id, name, barcode, quantity, cost, value."+
-                "\n"+"-Recommendation don't use column A to F more than to the list."
+                "\n"+"-Recommendation don't use column A to F more than to the list."+
+                "\n"+"-To get a Free Api key which is you at least ned go to https://www.barcodelookup.com and register for a free key"
         btn_doc_back.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
