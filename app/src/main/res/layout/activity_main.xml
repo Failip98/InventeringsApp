@@ -43,6 +43,16 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Page_Name"
+        app:layout_constraintBottom_toTopOf="@+id/editText_key"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Key"
         app:layout_constraintBottom_toTopOf="@+id/btn_goToSheet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
