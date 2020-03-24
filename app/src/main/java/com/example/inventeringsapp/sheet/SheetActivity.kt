@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.sheet
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -15,6 +16,8 @@ import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
 import javax.inject.Inject
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 
 
 private const val TAG = "SheetActivity"
@@ -30,10 +33,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     val updateitemFragment = UpdateItemFragment(this)
     lateinit var listItemAdapter: ListItemAdapter
 
-
     companion object {
-
-
         var sheetId = ""
         var pageName = ""
         var listItems = arrayListOf<ListItem>()
@@ -63,7 +63,6 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             Utils.requestRuntimePermissions(this)
         }
     }
-
 
     fun printSheet(){
         getDataFromApi()
@@ -106,9 +105,12 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     fun getDataFromApi() {
         Log.d(TAG,"Print new List")
         viewModel.fetchList(sheetId,pageName)
-        Handler().postDelayed({
-            createRecyclerView()
-        }, 1500)
+        CoroutineScope(Main).launch {
+            Handler().postDelayed({
+                errorMessage()
+                createRecyclerView()
+            }, 1500)
+        }
     }
 
     fun createRecyclerView(){
@@ -120,9 +122,23 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
         listItemAdapter = ListItemAdapter(listItems,this)
         rv_list.adapter = listItemAdapter
+
     }
 
     override fun itemClicked(listItem: ListItem) {
         Log.d("___",listItem.id)
     }
+
+    @SuppressLint("SetTextI18n")
+    fun errorMessage() {
+        Log.d(TAG,"onPostExecute")
+        Log.d(TAG, listItems.size.toString())
+        if (listItems.size != 0){
+            textView_error_mesage.visibility = View.GONE
+        }
+        else if(listItems.size == 0){
+            textView_error_mesage.text = "List empty or wrong sheet id"
+        }
+    }
+
 }
