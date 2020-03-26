@@ -32,6 +32,13 @@ class DeliteItemFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_deliteitem, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (lastClicktListItem != ""){
+            editText_remove.setText(lastClicktListItem)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (lastClicktListItem != ""){
