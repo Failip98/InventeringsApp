@@ -39,6 +39,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         var pageName = ""
         var listItems = arrayListOf<ListItem>()
         val emptyFragment = EmptyFragment()
+        var lastClicktListItem = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +131,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     override fun itemClicked(listItem: ListItem) {
         Log.d("___",listItem.id)
+        lastClicktListItem = listItem.id
     }
 
     @SuppressLint("SetTextI18n")
