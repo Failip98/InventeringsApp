@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/menu_addItem"
-        android:title="Add item" />
-
-    <item android:id="@+id/menu_scanItem"
-        android:title="Scan in item"/>
-
-    <item android:id="@+id/menu_removeItem"
-        android:title="Remove"/>
-
-    <item android:id="@+id/menu_updateItem"
-        android:title="Update"/>
-
+    <item android:id="@+id/menu_backToMain"
+        android:icon="@drawable/ic_arrow_forward_white_48dp"
+        app:showAsAction="ifRoom"
+        android:title="Back" />
 
 </menu>

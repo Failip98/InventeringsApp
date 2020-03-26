@@ -21,10 +21,11 @@
     <string name="prompt_move_camera_closer">Move closer to search</string>
     <string name="prompt_searching">Searching…</string>
     <string name="product_search_button">Search object</string>
-    -<plurals name="bottom_sheet_title">
-    <item quantity="one">%d match found</item>
-    <item quantity="other">%d matches found</item>
-</plurals>
+    -
+    <plurals name="bottom_sheet_title">
+        <item quantity="one">%d match found</item>
+        <item quantity="other">%d matches found</item>
+    </plurals>
     <string name="static_image_prompt_detected_no_results">No results found</string>
     <string name="static_image_prompt_detected_results">Tap on a dot to inspect</string>
     <string name="static_image_card_no_result_title">No result found</string>

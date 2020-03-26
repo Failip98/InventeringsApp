@@ -15,5 +15,6 @@ class DB{
         var devmode = true
         var sheetId: String ?= null
         var pagename: String ?= null
+        var apiKey : String ?= null
     }
 }
