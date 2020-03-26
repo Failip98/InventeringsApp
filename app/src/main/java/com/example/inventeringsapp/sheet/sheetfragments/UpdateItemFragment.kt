@@ -24,8 +24,8 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     var idToUpdate = 0
     var name = ""
-    var quantity = 0.0
-    var cost = 0.0
+    var quantity = -1.0
+    var cost = -1.0
     var valueprice = 0.0
     var barcode =""
 
@@ -146,10 +146,10 @@ class UpdateItemFragment (context: Context) : Fragment() {
         if (barcode == ""){
             barcode = listItem.barcode
         }
-        if (quantity == 0.0){
+        if (quantity == -1.0){
             quantity = listItem.quantity
         }
-        if (cost == 0.0){
+        if (cost == -1.0){
             cost = listItem.cost
         }
         update(index)
@@ -163,6 +163,7 @@ class UpdateItemFragment (context: Context) : Fragment() {
             val spreadsheetId = SheetActivity.sheetId
             val range = SheetActivity.pageName +"!A"+(index+2)+":F"+(index+2)
             val valueInputOption = "RAW"
+            Log.d(TAG,cost.toString())
             val requestBody = ValueRange()
                 .setValues(
                     Arrays.asList(
