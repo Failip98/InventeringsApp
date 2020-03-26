@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastClicktListItem
 import com.google.api.services.sheets.v4.model.ValueRange
 import kotlinx.android.synthetic.main.fragment_updateitem.*
+import java.io.IOException
 import java.util.*
 
 private const val TAG = "UpdateItemFragment"
@@ -37,8 +39,18 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (lastClicktListItem != ""){
+            editText_updateId.setText(lastClicktListItem)
+        }
         btn_update.setOnClickListener {
             readinput()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (lastClicktListItem != ""){
+            editText_updateId.setText(lastClicktListItem)
         }
     }
 
@@ -156,10 +168,15 @@ class UpdateItemFragment (context: Context) : Fragment() {
                     Arrays.asList(
                         Arrays.asList(idToUpdate,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
                 )
-            val request =
-                DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
-            request?.valueInputOption = valueInputOption
-            request?.execute()
+            try {
+                val request =
+                    DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
+                request?.valueInputOption = valueInputOption
+                request?.execute()
+                lastClicktListItem = ""
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }).start()
     }
 }

@@ -27,11 +27,11 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     @Inject
     lateinit var viewModel: SheetViewModel
 
-    val fragmentManager = supportFragmentManager
-    val addItemFragment = AddItemFragment()
-    val deliteItemFragment = DeliteItemFragment()
-    val scanItemFragment = ScanItemFragment(this)
-    val updateitemFragment = UpdateItemFragment(this)
+    var fragmentManager = supportFragmentManager
+    var addItemFragment = AddItemFragment()
+    var deliteItemFragment = DeliteItemFragment()
+    var scanItemFragment = ScanItemFragment(this)
+    var updateitemFragment = UpdateItemFragment(this)
     lateinit var listItemAdapter: ListItemAdapter
 
     companion object {
