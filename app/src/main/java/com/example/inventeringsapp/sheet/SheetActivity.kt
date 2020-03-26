@@ -27,11 +27,11 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     @Inject
     lateinit var viewModel: SheetViewModel
 
-    val fragmentManager = supportFragmentManager
-    val addItemFragment = AddItemFragment()
-    val deliteItemFragment = DeliteItemFragment()
-    val scanItemFragment = ScanItemFragment(this)
-    val updateitemFragment = UpdateItemFragment(this)
+    var fragmentManager = supportFragmentManager
+    var addItemFragment = AddItemFragment()
+    var deliteItemFragment = DeliteItemFragment()
+    var scanItemFragment = ScanItemFragment(this)
+    var updateitemFragment = UpdateItemFragment(this)
     lateinit var listItemAdapter: ListItemAdapter
 
     companion object {
@@ -39,6 +39,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         var pageName = ""
         var listItems = arrayListOf<ListItem>()
         val emptyFragment = EmptyFragment()
+        var lastClicktListItem = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +131,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     override fun itemClicked(listItem: ListItem) {
         Log.d("___",listItem.id)
+        lastClicktListItem = listItem.id
     }
 
     @SuppressLint("SetTextI18n")
