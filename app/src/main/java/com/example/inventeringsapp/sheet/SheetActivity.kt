@@ -74,7 +74,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         }
         printSheet()
     }
-
+    
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.nav_menu,menu)
         return super.onCreateOptionsMenu(menu)
@@ -85,6 +85,9 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             R.id.menu_backToMain->{
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.menu_renew->{
+                printSheet()
             }
         }
         return super.onOptionsItemSelected(item)
