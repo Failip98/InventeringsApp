@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB.Companion.mService
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastFaildscanget
 import com.google.android.material.tabs.TabLayout
 import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.model.AppendValuesResponse
@@ -44,7 +45,6 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addItem.setOnClickListener {
-
             var q = false
             var c = false
             var n = false
@@ -89,6 +89,15 @@ class AddItemFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (lastFaildscanget != ""){
+            barcode = lastFaildscanget
+        }else{
+            barcode = ""
+        }
+    }
+
     companion object{
         var id :String = ""
         fun addItem(id:String, name:String, barcode:String, quantity:Double,cost:Double,valueprice:Double  ) {
@@ -109,6 +118,7 @@ class AddItemFragment : Fragment() {
                         ?.setInsertDataOption("INSERT_ROWS")
                         ?.setIncludeValuesInResponse(true)
                         ?.execute()!!
+                    lastFaildscanget = ""
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

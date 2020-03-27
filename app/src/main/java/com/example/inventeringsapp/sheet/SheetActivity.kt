@@ -40,6 +40,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         var listItems = arrayListOf<ListItem>()
         val emptyFragment = EmptyFragment()
         var lastClicktListItem = ""
+        var lastFaildscanget = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +75,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         }
         printSheet()
     }
-    
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.nav_menu,menu)
         return super.onCreateOptionsMenu(menu)
