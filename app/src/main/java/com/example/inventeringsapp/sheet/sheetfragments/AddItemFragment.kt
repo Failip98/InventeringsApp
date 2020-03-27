@@ -71,6 +71,11 @@ class AddItemFragment : Fragment() {
             }
 
             if (q && c && n){
+                if(checkBox_barcode.isChecked){
+                    barcode = lastFaildscanget
+                }else{
+                    barcode = ""
+                }
                 editText_addItemName.getText().clear()
                 editText_addItemQuantity.getText().clear()
                 editText_addItemCost.getText().clear()
@@ -91,6 +96,7 @@ class AddItemFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        checkBox_barcode.isChecked = false
         if (lastFaildscanget != ""){
             barcode = lastFaildscanget
         }else{
