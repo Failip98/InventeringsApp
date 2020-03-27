@@ -12,6 +12,9 @@ class DB{
 
         var mGoogleSignInClient : GoogleSignInClient? = null
 
-        var devmode = false
+        var devmode = true
+        var sheetId: String ?= null
+        var pagename: String ?= null
+        var apiKey : String ?= null
     }
 }

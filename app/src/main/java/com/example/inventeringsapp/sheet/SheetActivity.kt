@@ -1,48 +1,97 @@
 package com.example.inventeringsapp.sheet
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.inventeringsapp.LiveBarcodeScanningActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.inventeringsapp.OnStart
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.Utils
+import com.example.inventeringsapp.main.MainActivity
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.sheetfragments.*
 import kotlinx.android.synthetic.main.activity_sheet.*
-import java.util.*
+import javax.inject.Inject
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 
-class SheetActivity : AppCompatActivity() {
+private const val TAG = "+SheetActivity"
+class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
+    @Inject
+    lateinit var viewModel: SheetViewModel
 
-
-    private var mLastError: Exception? = null
-
-    private val fragmentManager = supportFragmentManager
-    private val emptyFragment = EmptyFragment()
-    private val addItemFragment = AddItemFragment()
-    private val deliteItemFragment = DeliteItemFragment()
-    private val scanItemFragment = ScanItemFragment(this)
-    private val updateitemFragment = UpdateItemFragment(this)
-
+    var fragmentManager = supportFragmentManager
+    var addItemFragment = AddItemFragment()
+    var deliteItemFragment = DeliteItemFragment()
+    var scanItemFragment = ScanItemFragment(this)
+    var updateitemFragment = UpdateItemFragment(this)
+    lateinit var listItemAdapter: ListItemAdapter
 
     companion object {
         var sheetId = ""
         var pageName = ""
-        var sheetList = mutableListOf<String>()
-
+        var listItems = arrayListOf<ListItem>()
+        val emptyFragment = EmptyFragment()
+        var lastClicktListItem = ""
+        var lastFaildscanget = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
         changeFragment(emptyFragment)
+        OnStart.applicationComponent.inject(this)
+        if (DB.devmode == true){
+            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
+            pageName = "Test"
+            DB.sheetId = sheetId
+            DB.pagename = pageName
+        }else{
+            sheetId = intent?.getStringExtra("sheet_id").toString()
+            pageName = intent?.getStringExtra("pageName").toString()
+        }
+
+        btn_scanItem.setOnClickListener {
+            changeFragment(scanItemFragment)
+        }
+        btn_addListItem.setOnClickListener {
+            changeFragment(addItemFragment)
+        }
+        btn_editItem.setOnClickListener {
+            changeFragment(updateitemFragment)
+        }
+        btn_deliteItem.setOnClickListener {
+            changeFragment(deliteItemFragment)
+        }
+        btn_close.setOnClickListener {
+            changeFragment(emptyFragment)
+        }
         printSheet()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item?.itemId){
+            R.id.menu_backToMain->{
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.menu_renew->{
+                printSheet()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
@@ -53,10 +102,7 @@ class SheetActivity : AppCompatActivity() {
     }
 
     fun printSheet(){
-        var broutSheetList = doInBackground()
-        Handler().postDelayed({
-            onPostExecute(broutSheetList)
-        }, 1500)
+        getDataFromApi()
     }
 
     fun changeFragment(fragment: Fragment){
@@ -65,101 +111,43 @@ class SheetActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.nav_menu,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId){
-            R.id.menu_addItem->{
-                Log.d("___", item.itemId.toString())
-                changeFragment(addItemFragment)
-            }
-            R.id.menu_scanItem->{
-                Log.d("___", item.itemId.toString())
-                changeFragment(scanItemFragment)
-            }
-            R.id.menu_removeItem->{
-                Log.d("___", item.itemId.toString())
-                changeFragment(deliteItemFragment)
-            }
-            R.id.menu_updateItem->{
-                Log.d("___", item.itemId.toString())
-                changeFragment(updateitemFragment)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-
-    fun doInBackground(): List<String?>? {
-        //return getDataFromApi()
-        return try {
-            getDataFromApi()
-        } catch (e: java.lang.Exception) {
-            mLastError = e
-            null
+    fun getDataFromApi() {
+        Log.d(TAG,"Print new List")
+        viewModel.fetchList(sheetId,pageName)
+        CoroutineScope(Main).launch {
+            Handler().postDelayed({
+                errorMessage()
+                createRecyclerView()
+            }, 1500)
         }
     }
 
-    fun getDataFromApi(): List<String>? {
-        //"1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
+    fun createRecyclerView(){
+        val layoutManager = LinearLayoutManager(this)
+        rv_list.layoutManager = layoutManager
 
-        if (DB.devmode == true){
-            sheetId = "1oX3wvT_i0c5V8Pme7AOeoBd8t1Lf-3zzWHjBzfTT2Gw"
-            pageName = "Test"
-        }else{
-            sheetId = intent?.getStringExtra("sheet_id").toString()
-            pageName = intent?.getStringExtra("pageName").toString()
-        }
-        //var sheetId = intent.getStringExtra("sheet_id")
-        //var pageName = intent.getStringExtra("pageName")
-        val spreadsheetId = sheetId
-        val range = pageName + "!A:F"
-        val results: MutableList<String> =
-            ArrayList()
-        Thread(Runnable {
-            try {
-            val response =
-                DB.mService!!.spreadsheets().values()[spreadsheetId, range]
-                    .execute()
-            val values = response.getValues()
-            if (values != null) {
-                for (row in values) {
-                    for (col in values) {
-                        if (col[2].equals("")) {
-                            col.removeAt(2)
-                            col.add(2, "----------------------")
-                        }
-                    }
-                    results.add(row[0].toString() + ", " + row[1] + ", " + row[2] + ", " + row[3] + ", " + row[4] + ", " + row[5])
-                }
-            }
-            }catch (e: java.lang.Exception){
-                mLastError = e
-            }
-        }).start()
-        return results
+        val dividerItemDecoration = DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        rv_list.addItemDecoration(dividerItemDecoration)
+
+        listItemAdapter = ListItemAdapter(listItems,this)
+        rv_list.adapter = listItemAdapter
     }
 
-    fun onPostExecute(output: List<String?>?) {
-        if (output == null || output.size == 0) {
-            if (DB.devmode == true){
-                mOutputText.text = ("The following error occurred:\n" + mLastError!!.message)
-            }else{
-                mOutputText.setText("Check your sheet settings")
-            }
-        } else {
-            mOutputText.setText(TextUtils.join("\n", output))
-
-        }
-        Handler().postDelayed({
-            sheetList = output as MutableList<String>
-        },1000)
+    override fun itemClicked(listItem: ListItem) {
+        Log.d("___",listItem.id)
+        lastClicktListItem = listItem.id
     }
 
-
+    @SuppressLint("SetTextI18n")
+    fun errorMessage() {
+        Log.d(TAG,"onPostExecute")
+        Log.d(TAG, listItems.size.toString())
+        if (listItems.size != 0){
+            textView_error_mesage.visibility = View.GONE
+        }
+        else if(listItems.size == 0){
+            textView_error_mesage.text = "List empty or wrong sheet id"
+        }
+    }
 
 }
