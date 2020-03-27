@@ -264,15 +264,18 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                         runOnUiThread {
                             Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
                         }
+                        SheetActivity.lastFaildscanget = barcode.toString()
                     }
                 } catch (ex: Exception) {
                     CoroutineScope(Main).launch {
+                        SheetActivity.lastFaildscanget = barcode
                         Handler().postDelayed({
                             startActivity(intent)
                         }, 1500)
                     }
                     runOnUiThread {
                         Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
+
                     }
                     Log.d("___","Can`t find product")
                 }

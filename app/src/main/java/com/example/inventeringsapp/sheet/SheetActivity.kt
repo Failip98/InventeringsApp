@@ -40,6 +40,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         var listItems = arrayListOf<ListItem>()
         val emptyFragment = EmptyFragment()
         var lastClicktListItem = ""
+        var lastFaildscanget = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +86,9 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             R.id.menu_backToMain->{
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.menu_renew->{
+                printSheet()
             }
         }
         return super.onOptionsItemSelected(item)
