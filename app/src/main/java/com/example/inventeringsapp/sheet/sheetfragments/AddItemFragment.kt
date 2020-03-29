@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB.Companion.mService
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastFaildscanget
 import com.google.android.material.tabs.TabLayout
 import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.model.AppendValuesResponse
@@ -44,7 +45,6 @@ class AddItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_addItem.setOnClickListener {
-
             var q = false
             var c = false
             var n = false
@@ -71,6 +71,11 @@ class AddItemFragment : Fragment() {
             }
 
             if (q && c && n){
+                if(checkBox_barcode.isChecked){
+                    barcode = lastFaildscanget
+                }else{
+                    barcode = ""
+                }
                 editText_addItemName.getText().clear()
                 editText_addItemQuantity.getText().clear()
                 editText_addItemCost.getText().clear()
@@ -86,6 +91,16 @@ class AddItemFragment : Fragment() {
                 Log.d(TAG,n.toString()+"||"+q.toString()+"||"+c.toString())
             }
 
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkBox_barcode.isChecked = false
+        if (lastFaildscanget != ""){
+            barcode = lastFaildscanget
+        }else{
+            barcode = ""
         }
     }
 
@@ -109,6 +124,7 @@ class AddItemFragment : Fragment() {
                         ?.setInsertDataOption("INSERT_ROWS")
                         ?.setIncludeValuesInResponse(true)
                         ?.execute()!!
+                    lastFaildscanget = ""
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

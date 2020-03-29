@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.SheetActivity
-import com.google.android.material.tabs.TabLayout
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastClicktListItem
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest
 import com.google.api.services.sheets.v4.model.DeleteDimensionRequest
 import com.google.api.services.sheets.v4.model.DimensionRange
@@ -32,8 +32,18 @@ class DeliteItemFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_deliteitem, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (lastClicktListItem != ""){
+            editText_remove.setText(lastClicktListItem)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (lastClicktListItem != ""){
+            editText_remove.setText(lastClicktListItem)
+        }
         btn_remove.setOnClickListener {
             delite()
             Handler().postDelayed({
@@ -83,6 +93,7 @@ class DeliteItemFragment : Fragment() {
                     try {
                         DB.mService?.spreadsheets()?.batchUpdate(SheetActivity.sheetId, content)
                             ?.execute()
+                        lastClicktListItem = ""
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -91,3 +102,5 @@ class DeliteItemFragment : Fragment() {
         }
     }
 }
+
+

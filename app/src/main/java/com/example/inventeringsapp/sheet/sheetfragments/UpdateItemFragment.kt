@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastClicktListItem
 import com.google.api.services.sheets.v4.model.ValueRange
 import kotlinx.android.synthetic.main.fragment_updateitem.*
+import java.io.IOException
 import java.util.*
 
 private const val TAG = "UpdateItemFragment"
@@ -22,8 +24,8 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     var idToUpdate = 0
     var name = ""
-    var quantity = 0.0
-    var cost = 0.0
+    var quantity = -1.0
+    var cost = -1.0
     var valueprice = 0.0
     var barcode =""
 
@@ -37,8 +39,18 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (lastClicktListItem != ""){
+            editText_updateId.setText(lastClicktListItem)
+        }
         btn_update.setOnClickListener {
             readinput()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (lastClicktListItem != ""){
+            editText_updateId.setText(lastClicktListItem)
         }
     }
 
@@ -134,10 +146,10 @@ class UpdateItemFragment (context: Context) : Fragment() {
         if (barcode == ""){
             barcode = listItem.barcode
         }
-        if (quantity == 0.0){
+        if (quantity == -1.0){
             quantity = listItem.quantity
         }
-        if (cost == 0.0){
+        if (cost == -1.0){
             cost = listItem.cost
         }
         update(index)
@@ -151,15 +163,21 @@ class UpdateItemFragment (context: Context) : Fragment() {
             val spreadsheetId = SheetActivity.sheetId
             val range = SheetActivity.pageName +"!A"+(index+2)+":F"+(index+2)
             val valueInputOption = "RAW"
+            Log.d(TAG,cost.toString())
             val requestBody = ValueRange()
                 .setValues(
                     Arrays.asList(
                         Arrays.asList(idToUpdate,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
                 )
-            val request =
-                DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
-            request?.valueInputOption = valueInputOption
-            request?.execute()
+            try {
+                val request =
+                    DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
+                request?.valueInputOption = valueInputOption
+                request?.execute()
+                lastClicktListItem = ""
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }).start()
     }
 }
