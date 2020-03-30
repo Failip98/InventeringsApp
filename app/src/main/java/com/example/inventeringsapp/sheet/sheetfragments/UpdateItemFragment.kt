@@ -82,8 +82,8 @@ class UpdateItemFragment (context: Context) : Fragment() {
             if (editText_updateQuantity.text.toString().length < 10){
                 quantity = editText_updateQuantity.text.toString().toDouble()
             }else{
-                editText_updateQuantity.setHint("Number to big")
                 Toast.makeText(context, "Number to big", Toast.LENGTH_SHORT).show()
+                editText_updateQuantity.setHint("Number to big")
                 editText_updateQuantity.setHintTextColor(Color.RED)
                 badinput ++
             }
@@ -125,7 +125,6 @@ class UpdateItemFragment (context: Context) : Fragment() {
             }
             i++
         }
-        Log.d(TAG,index.toString())
         if (index == -1) {
             editText_updateId.setHint("Can´t finde Id")
             Toast.makeText(context, "Can´t finde Id", Toast.LENGTH_SHORT).show()
