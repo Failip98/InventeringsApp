@@ -10,7 +10,6 @@ class DriveCompletionEventService : DriveEventService() {
             event.status == CompletionEvent.STATUS_SUCCESS -> {
                 // Do here whatever we want.
                 val driveId = event.driveId
-                Log.d("___",driveId.resourceId.toString())
                 // Finally dismiss completed event. We no longer need it.
                 event.dismiss()
             }
