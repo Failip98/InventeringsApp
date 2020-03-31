@@ -41,6 +41,8 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         val emptyFragment = EmptyFragment()
         var lastClicktListItem = ""
         var lastFaildscanget = ""
+        var dubblettIndex = -1
+        var dubblettId = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +105,9 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     fun printSheet(){
         getDataFromApi()
+        if(dubblettIndex != -1){
+
+        }
     }
 
     fun changeFragment(fragment: Fragment){
@@ -134,8 +139,9 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
     }
 
     override fun itemClicked(listItem: ListItem) {
-        Log.d("___",listItem.id)
         lastClicktListItem = listItem.id
+        dubblettId = ""
+        dubblettIndex = -1
     }
 
     @SuppressLint("SetTextI18n")
@@ -149,5 +155,4 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
             textView_error_mesage.text = "List empty or wrong sheet id"
         }
     }
-
 }

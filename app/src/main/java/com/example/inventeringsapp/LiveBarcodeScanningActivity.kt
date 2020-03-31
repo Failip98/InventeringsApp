@@ -46,7 +46,6 @@ import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
@@ -94,10 +93,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
             setOnClickListener(this@LiveBarcodeScanningActivity)
         }
         setUpWorkflowModel()
-
-        CoroutineScope(IO).launch {
-
-        }
     }
 
     override fun onResume() {
@@ -221,7 +216,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 val barcodeFieldList = ArrayList<BarcodeField>()
                 barcodeFieldList.add(BarcodeField("Raw Value", barcode.rawValue ?: ""))
                 BarcodeResultFragment.show(supportFragmentManager, barcodeFieldList)
-                Log.d("___",barcode.rawValue.toString())
                 barcode.rawValue?.let { readApi(it) }
             }
         })
@@ -242,7 +236,6 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     val url =
                         URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key="+DB.apiKey.toString())
                     val br = BufferedReader(InputStreamReader(url.openStream()))
-                    Log.d("___", br.toString())
                     var str: String? = ""
                     var data: String? = ""
                     while (null != br.readLine().also { str = it }) {
@@ -252,20 +245,26 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     val value: RootObject = g.fromJson(data, RootObject::class.java)
                     val barcode = value.products[0].barcode_number
                     val name = value.products[0].product_name
-                    if(name != null && barcode != null){
-                        AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
-                        CoroutineScope(Main).launch {
-                            Handler().postDelayed({
-                                startActivity(intent)
-                            }, 1500)
+                        if(name != null && barcode != null){
+                            if (!seeDubblett(barcode)){
+                                AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+                            }else{
+                                runOnUiThread {
+                                    Toast.makeText(this, "Product already exists", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            CoroutineScope(Main).launch {
+                                Handler().postDelayed({
+                                    startActivity(intent)
+                                }, 1500)
                         }
-                    }else{
-                        Log.d("___","Can`t add product")
-                        runOnUiThread {
+                        }else{
+                            Log.d("LiveBarcodeScanningActivity","Can`t add product")
+                            runOnUiThread {
                             Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
                         }
-                        SheetActivity.lastFaildscanget = barcode.toString()
-                    }
+                            SheetActivity.lastFaildscanget = barcode.toString()
+                        }
                 } catch (ex: Exception) {
                     CoroutineScope(Main).launch {
                         SheetActivity.lastFaildscanget = barcode
@@ -275,11 +274,26 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     }
                     runOnUiThread {
                         Toast.makeText(this, "Can`t find product", Toast.LENGTH_SHORT).show()
-
                     }
-                    Log.d("___","Can`t find product")
+                    Log.d("LiveBarcodeScanningActivity","Can`t find product")
                 }
             }
         }).start()
+    }
+
+    private fun seeDubblett(barcode: String?):Boolean {
+        var a =  SheetActivity.listItems.map { t -> t.barcode }
+
+        var i = 0
+        var index = -1
+        while (i<a.size){
+            if (a[i].equals(barcode)){
+                index = i
+            }
+            i++
+        }
+        SheetActivity.dubblettIndex = index
+        SheetActivity.dubblettId = SheetActivity.listItems[index].id
+        return index != -1
     }
 }
