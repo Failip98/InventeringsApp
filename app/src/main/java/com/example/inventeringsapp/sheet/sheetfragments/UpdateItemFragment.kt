@@ -39,8 +39,12 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (lastClicktListItem != ""){
-            editText_updateId.setText(lastClicktListItem)
+        if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+            if (SheetActivity.dubblettId != ""){
+                editText_updateId.setText(SheetActivity.dubblettId)
+            }else if (lastClicktListItem != ""){
+                editText_updateId.setText(lastClicktListItem)
+            }
         }
         btn_update.setOnClickListener {
             readinput()
@@ -49,8 +53,12 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (lastClicktListItem != ""){
-            editText_updateId.setText(lastClicktListItem)
+        if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+            if (SheetActivity.dubblettId != ""){
+                editText_updateId.setText(SheetActivity.dubblettId)
+            }else if (lastClicktListItem != ""){
+                editText_updateId.setText(lastClicktListItem)
+            }
         }
     }
 
@@ -173,7 +181,15 @@ class UpdateItemFragment (context: Context) : Fragment() {
                     DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
                 request?.valueInputOption = valueInputOption
                 request?.execute()
-                lastClicktListItem = ""
+                if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+                    if (SheetActivity.dubblettId != ""){
+                        SheetActivity.dubblettId = ""
+                        SheetActivity.dubblettIndex = -1
+                        lastClicktListItem = ""
+                    }else if (lastClicktListItem != ""){
+                        lastClicktListItem = ""
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
