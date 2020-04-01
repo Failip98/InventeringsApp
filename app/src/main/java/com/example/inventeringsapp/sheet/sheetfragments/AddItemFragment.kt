@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.sheet.sheetfragments
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
@@ -84,6 +86,7 @@ class AddItemFragment : Fragment() {
                 editText_addItemName.setHintTextColor(Color.GRAY)
                 Log.d(TAG,name + "tacken")
                 addItem(id,name,barcode,quantity,cost,valueprice)
+                view.hideKeyboard()
                 Handler().postDelayed({
                     (activity as SheetActivity?)?.printSheet()
                 },1000)
@@ -132,6 +135,9 @@ class AddItemFragment : Fragment() {
         }
     }
 
-
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
 
 }
