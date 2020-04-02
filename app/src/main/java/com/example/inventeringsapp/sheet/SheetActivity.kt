@@ -105,9 +105,6 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
 
     fun printSheet(){
         getDataFromApi()
-        if(dubblettIndex != -1){
-
-        }
     }
 
     fun changeFragment(fragment: Fragment){
@@ -153,6 +150,7 @@ class SheetActivity : AppCompatActivity(), ListItemActionListener {
         }
         else if(listItems.size == 0){
             textView_error_mesage.text = "List empty or wrong sheet id"
+            textView_error_mesage.visibility = View.VISIBLE
         }
     }
 }
