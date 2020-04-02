@@ -23,6 +23,8 @@ import java.util.*
 private const val TAG = "UpdateItemFragment"
 class UpdateItemFragment (context: Context) : Fragment() {
 
+
+    var indexToUpdate = -1
     var idToUpdate = 0
     var name = ""
     var quantity = -1.0
@@ -147,6 +149,7 @@ class UpdateItemFragment (context: Context) : Fragment() {
             editText_updateId.setHint("Id to update")
             Log.d(TAG,index.toString())
             setvalue(sheetList[index],index)
+            indexToUpdate = index
         }
     }
 
@@ -181,7 +184,7 @@ class UpdateItemFragment (context: Context) : Fragment() {
             val requestBody = ValueRange()
                 .setValues(
                     Arrays.asList(
-                        Arrays.asList(idToUpdate,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
+                        Arrays.asList(idToUpdate,name,barcode,quantity,cost, null)) as List<MutableList<Any>>?
                 )
             try {
                 val request =

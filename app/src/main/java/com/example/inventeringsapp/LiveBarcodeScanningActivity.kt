@@ -247,7 +247,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     val name = value.products[0].product_name
                         if(name != null && barcode != null){
                             if (!seeDubblett(barcode)){
-                                AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0,0.0)
+                                AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0)
                             }else{
                                 runOnUiThread {
                                     Toast.makeText(this, "Product already exists", Toast.LENGTH_SHORT).show()
