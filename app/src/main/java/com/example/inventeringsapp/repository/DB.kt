@@ -9,7 +9,7 @@ class DB{
         var auth = FirebaseAuth.getInstance()
         var mService: Sheets? = null
         var mGoogleSignInClient : GoogleSignInClient? = null
-        var devmode = true
+        var devmode = false
         var sheetId: String ?= null
         var pagename: String ?= null
         var apiKey : String ?= null
