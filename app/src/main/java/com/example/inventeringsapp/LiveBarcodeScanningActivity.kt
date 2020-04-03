@@ -41,6 +41,8 @@ import com.example.inventeringsapp.camera.WorkflowModel.WorkflowState
 import com.example.inventeringsapp.repository.DB
 import com.example.inventeringsapp.settings.SettingsActivity
 import com.example.inventeringsapp.sheet.SheetActivity
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.dubblettId
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.dubblettIndex
 import com.example.inventeringsapp.sheet.sheetfragments.AddItemFragment
 import com.google.android.material.chip.Chip
 import com.google.common.base.Objects
@@ -232,6 +234,10 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                 .putExtra("pageName",DB.pagename)
             if (DB.apiKey != null){
                 Log.d(TAG,DB.apiKey.toString())
+                if (barcode != "" ||barcode == null )
+                {
+                    seeDubblett(barcode)
+                }
                 try {
                     val url =
                         URL("https://api.barcodelookup.com/v2/products?barcode="+barcode+"&formatted=y&key="+DB.apiKey.toString())
@@ -246,23 +252,24 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
                     val barcode = value.products[0].barcode_number
                     val name = value.products[0].product_name
                         if(name != null && barcode != null){
-                            if (!seeDubblett(barcode)){
+                            if (dubblettIndex == -1){
                                 AddItemFragment.addItem("", name!!, barcode!!,0.0,0.0)
                             }else{
                                 runOnUiThread {
                                     Toast.makeText(this, "Product already exists", Toast.LENGTH_SHORT).show()
                                 }
                             }
+
                             CoroutineScope(Main).launch {
                                 Handler().postDelayed({
                                     startActivity(intent)
                                 }, 1500)
-                        }
+                            }
                         }else{
                             Log.d("LiveBarcodeScanningActivity","Can`t add product")
                             runOnUiThread {
-                            Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
-                        }
+                                Toast.makeText(this, "Can`t add product", Toast.LENGTH_SHORT).show()
+                            }
                             SheetActivity.lastFaildscanget = barcode.toString()
                         }
                 } catch (ex: Exception) {
@@ -281,19 +288,23 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), OnClickListener {
         }).start()
     }
 
-    private fun seeDubblett(barcode: String?):Boolean {
-        var a =  SheetActivity.listItems.map { t -> t.barcode }
-
-        var i = 0
-        var index = -1
-        while (i<a.size){
-            if (a[i].equals(barcode)){
-                index = i
+    private fun seeDubblett(barcode: String?){
+        Thread(Runnable {
+            var a = SheetActivity.listItems.map { t -> t.barcode }
+            var i = 0
+            var index = -1
+            while (i < a.size) {
+                if (a[i].equals(barcode)) {
+                    index = i
+                }
+                i++
             }
-            i++
-        }
-        SheetActivity.dubblettIndex = index
-        SheetActivity.dubblettId = SheetActivity.listItems[index].id
-        return index != -1
+            dubblettIndex = index
+            if (index != -1){
+                dubblettId = SheetActivity.listItems[index].id
+            }else{
+                dubblettId = ""
+            }
+        }).start()
     }
 }
