@@ -83,6 +83,7 @@ class DeliteItemFragment : Fragment() {
                 Toast.makeText(context, "Can´t finde Id", Toast.LENGTH_SHORT).show()
             }else{
                 editText_remove.getText().clear()
+                editText_remove.setHintTextColor(Color.GRAY)
                 editText_remove.setTextColor(Color.GRAY)
                 Thread(Runnable {
                     val content = BatchUpdateSpreadsheetRequest()
