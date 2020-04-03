@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.sheet.sheetfragments
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -7,12 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
 import com.example.inventeringsapp.repository.DB.Companion.mService
 import com.example.inventeringsapp.sheet.SheetActivity
 import com.example.inventeringsapp.sheet.SheetActivity.Companion.lastFaildscanget
+import com.example.inventeringsapp.sheet.SheetActivity.Companion.listItems
 import com.google.android.material.tabs.TabLayout
 import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.model.AppendValuesResponse
@@ -25,14 +28,11 @@ import kotlin.random.Random
 private const val TAG = "AddItemFragment"
 class AddItemFragment : Fragment() {
 
-    lateinit var textView: TextView
-
     var id = ""
     var name = ""
     var barcode = ""
     var quantity = 0.0
     var cost = 0.0
-    var valueprice = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,7 +83,8 @@ class AddItemFragment : Fragment() {
                 editText_addItemCost.setHintTextColor(Color.GRAY)
                 editText_addItemName.setHintTextColor(Color.GRAY)
                 Log.d(TAG,name + "tacken")
-                addItem(id,name,barcode,quantity,cost,valueprice)
+                addItem(id,name,barcode,quantity,cost)
+                view.hideKeyboard()
                 Handler().postDelayed({
                     (activity as SheetActivity?)?.printSheet()
                 },1000)
@@ -106,7 +107,7 @@ class AddItemFragment : Fragment() {
 
     companion object{
         var id :String = ""
-        fun addItem(id:String, name:String, barcode:String, quantity:Double,cost:Double,valueprice:Double  ) {
+        fun addItem(id:String, name:String, barcode:String, quantity:Double,cost:Double) {
             Log.d(TAG,name + "compani object")
             this.id = id
             this.id = Random.nextInt(100000000,999999999).toString()
@@ -114,8 +115,9 @@ class AddItemFragment : Fragment() {
                 ValueRange()
                     .setValues(
                         Arrays.asList(
-                            Arrays.asList(this.id,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
+                            Arrays.asList(this.id,name,barcode,quantity,cost,"=SUM(D"+(listItems.size+2)+"*E"+(listItems.size+2)+")")) as List<MutableList<Any>>?
                     )
+            SheetActivity.lastClicktListItem = this.id
             Thread(Runnable {
                 try {
                     val appendResult: AppendValuesResponse = mService?.spreadsheets()?.values()
@@ -132,6 +134,9 @@ class AddItemFragment : Fragment() {
         }
     }
 
-
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
 
 }

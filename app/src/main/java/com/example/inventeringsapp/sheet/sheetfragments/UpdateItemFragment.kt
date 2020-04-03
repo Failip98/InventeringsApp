@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
@@ -22,6 +23,8 @@ import java.util.*
 private const val TAG = "UpdateItemFragment"
 class UpdateItemFragment (context: Context) : Fragment() {
 
+
+    var indexToUpdate = -1
     var idToUpdate = 0
     var name = ""
     var quantity = -1.0
@@ -39,8 +42,12 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (lastClicktListItem != ""){
-            editText_updateId.setText(lastClicktListItem)
+        if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+            if (SheetActivity.dubblettId != ""){
+                editText_updateId.setText(SheetActivity.dubblettId)
+            }else if (lastClicktListItem != ""){
+                editText_updateId.setText(lastClicktListItem)
+            }
         }
         btn_update.setOnClickListener {
             readinput()
@@ -49,8 +56,12 @@ class UpdateItemFragment (context: Context) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (lastClicktListItem != ""){
-            editText_updateId.setText(lastClicktListItem)
+        if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+            if (SheetActivity.dubblettId != ""){
+                editText_updateId.setText(SheetActivity.dubblettId)
+            }else if (lastClicktListItem != ""){
+                editText_updateId.setText(lastClicktListItem)
+            }
         }
     }
 
@@ -82,8 +93,8 @@ class UpdateItemFragment (context: Context) : Fragment() {
             if (editText_updateQuantity.text.toString().length < 10){
                 quantity = editText_updateQuantity.text.toString().toDouble()
             }else{
-                editText_updateQuantity.setHint("Number to big")
                 Toast.makeText(context, "Number to big", Toast.LENGTH_SHORT).show()
+                editText_updateQuantity.setHint("Number to big")
                 editText_updateQuantity.setHintTextColor(Color.RED)
                 badinput ++
             }
@@ -115,6 +126,11 @@ class UpdateItemFragment (context: Context) : Fragment() {
         }
     }
 
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
     fun findindex(){
         var sheetList = SheetActivity.listItems
         var i = 0
@@ -125,7 +141,6 @@ class UpdateItemFragment (context: Context) : Fragment() {
             }
             i++
         }
-        Log.d(TAG,index.toString())
         if (index == -1) {
             editText_updateId.setHint("Can´t finde Id")
             Toast.makeText(context, "Can´t finde Id", Toast.LENGTH_SHORT).show()
@@ -134,6 +149,7 @@ class UpdateItemFragment (context: Context) : Fragment() {
             editText_updateId.setHint("Id to update")
             Log.d(TAG,index.toString())
             setvalue(sheetList[index],index)
+            indexToUpdate = index
         }
     }
 
@@ -153,6 +169,7 @@ class UpdateItemFragment (context: Context) : Fragment() {
             cost = listItem.cost
         }
         update(index)
+        view?.hideKeyboard()
         Handler().postDelayed({
             (activity as SheetActivity?)?.printSheet()
         },1000)
@@ -167,14 +184,22 @@ class UpdateItemFragment (context: Context) : Fragment() {
             val requestBody = ValueRange()
                 .setValues(
                     Arrays.asList(
-                        Arrays.asList(idToUpdate,name,barcode,quantity,cost,valueprice)) as List<MutableList<Any>>?
+                        Arrays.asList(idToUpdate,name,barcode,quantity,cost, null)) as List<MutableList<Any>>?
                 )
             try {
                 val request =
                     DB.mService?.spreadsheets()?.values()?.update(spreadsheetId, range, requestBody)
                 request?.valueInputOption = valueInputOption
                 request?.execute()
-                lastClicktListItem = ""
+                if (lastClicktListItem != "" || SheetActivity.dubblettId != ""){
+                    if (SheetActivity.dubblettId != ""){
+                        SheetActivity.dubblettId = ""
+                        SheetActivity.dubblettIndex = -1
+                        lastClicktListItem = ""
+                    }else if (lastClicktListItem != ""){
+                        lastClicktListItem = ""
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }

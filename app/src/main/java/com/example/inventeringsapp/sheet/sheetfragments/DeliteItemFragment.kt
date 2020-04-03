@@ -1,5 +1,6 @@
 package com.example.inventeringsapp.sheet.sheetfragments
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.inventeringsapp.R
@@ -46,10 +48,16 @@ class DeliteItemFragment : Fragment() {
         }
         btn_remove.setOnClickListener {
             delite()
+            view.hideKeyboard()
             Handler().postDelayed({
                 (activity as SheetActivity?)?.printSheet()
             },1000)
         }
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
     fun delite(){
@@ -75,6 +83,8 @@ class DeliteItemFragment : Fragment() {
                 Toast.makeText(context, "Can´t finde Id", Toast.LENGTH_SHORT).show()
             }else{
                 editText_remove.getText().clear()
+                editText_remove.setHintTextColor(Color.GRAY)
+                editText_remove.setTextColor(Color.GRAY)
                 Thread(Runnable {
                     val content = BatchUpdateSpreadsheetRequest()
                     val request: Request = Request()
