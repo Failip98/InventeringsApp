@@ -28,14 +28,11 @@ import kotlin.random.Random
 private const val TAG = "AddItemFragment"
 class AddItemFragment : Fragment() {
 
-    lateinit var textView: TextView
-
     var id = ""
     var name = ""
     var barcode = ""
     var quantity = 0.0
     var cost = 0.0
-    var valueprice = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -7,11 +7,8 @@ import com.google.firebase.auth.FirebaseAuth
 class DB{
     companion object{
         var auth = FirebaseAuth.getInstance()
-
         var mService: Sheets? = null
-
         var mGoogleSignInClient : GoogleSignInClient? = null
-
         var devmode = true
         var sheetId: String ?= null
         var pagename: String ?= null
