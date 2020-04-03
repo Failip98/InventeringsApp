@@ -1,8 +1,6 @@
 package com.example.inventeringsapp.login
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -54,10 +52,6 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent = DB.mGoogleSignInClient?.signInIntent
         startActivityForResult(signInIntent, 123)
     }
-
-
-
-
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -119,9 +113,6 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        //val currentUser = DB.auth.currentUser
-        //updateUI(currentUser)
     }
 
     private fun updateUI(user: FirebaseUser?) {

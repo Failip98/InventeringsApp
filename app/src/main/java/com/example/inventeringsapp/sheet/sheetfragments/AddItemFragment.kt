@@ -28,14 +28,11 @@ import kotlin.random.Random
 private const val TAG = "AddItemFragment"
 class AddItemFragment : Fragment() {
 
-    lateinit var textView: TextView
-
     var id = ""
     var name = ""
     var barcode = ""
     var quantity = 0.0
     var cost = 0.0
-    var valueprice = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,6 +117,7 @@ class AddItemFragment : Fragment() {
                         Arrays.asList(
                             Arrays.asList(this.id,name,barcode,quantity,cost,"=SUM(D"+(listItems.size+2)+"*E"+(listItems.size+2)+")")) as List<MutableList<Any>>?
                     )
+            SheetActivity.lastClicktListItem = this.id
             Thread(Runnable {
                 try {
                     val appendResult: AppendValuesResponse = mService?.spreadsheets()?.values()
