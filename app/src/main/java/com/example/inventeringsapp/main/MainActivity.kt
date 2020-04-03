@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             else{
-                if (DB.devmode == true){
+                if (DB.devmode == false){
                   DB.apiKey = "hw8qpl5aad8zdds4uqpizqibfzv74v"
                 }else{
                     DB.apiKey = apiKey
