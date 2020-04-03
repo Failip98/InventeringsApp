@@ -117,6 +117,7 @@ class AddItemFragment : Fragment() {
                         Arrays.asList(
                             Arrays.asList(this.id,name,barcode,quantity,cost,"=SUM(D"+(listItems.size+2)+"*E"+(listItems.size+2)+")")) as List<MutableList<Any>>?
                     )
+            SheetActivity.lastClicktListItem = this.id
             Thread(Runnable {
                 try {
                     val appendResult: AppendValuesResponse = mService?.spreadsheets()?.values()
